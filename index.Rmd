@@ -1,6 +1,8 @@
 ---
 title: "Hackathon November 2021 - Group 2"
-output: html_document
+output: 
+  html_document:
+    css: ["style.css", "colours.css"]
 ---
 
 ```{r, echo=FALSE}
@@ -11,7 +13,7 @@ library(plotly)
 library(rmarkdown)
 ```
 
-# Introduction
+### Introduction
 
 We have been given the task of exploring time series analysis as part of a hackathon. We have been given access to 3 datasets:
 
@@ -19,7 +21,7 @@ We have been given the task of exploring time series analysis as part of a hacka
 2.
 3.
 
-## 1. Data on COVID-19 (coronavirus) by Our World in Data
+###### 1. Data on COVID-19 (coronavirus) by Our World in Data
 
 This data can be read in directly from GitHub using `{readr}`. The `col_types` have to be specified up front otherwise it doesn't load correctly.
 
@@ -81,8 +83,7 @@ uk_covid_df <- uk_covid_df %>%
   dplyr::relocate(excess_mortalilty, .before = excess_mortality_cumulative)
 
 # Inspect
-uk_covid_df
-
+paged_table(uk_covid_df)
 ```
 
 Check the date range.
@@ -95,9 +96,9 @@ print(paste("End date of cases:",uk_covid_df %>% summarise(max(date)) %>% pull()
 print(paste("End date of deaths:", uk_covid_df %>% filter(deaths_cumulative > 0) %>% summarise(max(date)) %>% pull()))
 ```
 
-Quickly plot some of the {col}s and cumulative_{col}s.
+Quickly plot some of the cols (`{col}` on the right and `{col}_cumulative on the right).
 
-```{r}
+```{r, out.width="100%"}
 # Chart the cols (not sure how you can have negative deaths)
 p <- uk_covid_df %>% 
   pivot_longer(cols = -date, names_to = "measure", values_to = "count") %>%
