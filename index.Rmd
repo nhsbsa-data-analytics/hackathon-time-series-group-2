@@ -1,0 +1,87 @@
+---
+title: "Hackathon November 2021 - Group 2"
+output: html_document
+---
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(plotly)
+```
+
+# Introduction
+
+We have been given the task of exploring time series analysis as part of a hackathon. We have been given access to 3 datasets:
+
+1. [Data on COVID-19 (coronavirus) by Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
+2.
+3.
+
+## 1. Data on COVID-19 (coronavirus) by Our World in Data
+
+This data can be read in directly from GitHub using `{readr}`. The `col_types` have to be specified up front otherwise it doesn't load correctly.
+
+```{r}
+# Read in COVID data from GitHub with correct types
+covid_df <- readr::read_csv(
+  file = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv",
+  col_types = "cccDdddddddddddddddddddddddddddddcddddddddddddddddddddddddddddddddd"
+)
+
+# Inspect it
+head(covid_df)
+```
+
+There are many columns and groups but we are going to focus on United Kingdom with a subset of columns.
+
+```{r}
+# Filter and subset columns
+uk_covid_df <- covid_df %>% 
+  filter(location == "United Kingdom") %>%
+  # Rename some columns so they are either {col} or cumulative_{col}
+  select(
+    date, 
+    cases = new_cases,
+    cumulative_cases = total_cases,
+    deaths = new_deaths, 
+    cumulative_deaths = total_deaths, 
+    excess_mortality, 
+    cumulative_excess_mortality = excess_mortality_cumulative, 
+    cumulative_excess_mortality_absolute = excess_mortality_cumulative_absolute)
+
+# Inspect it
+head(uk_covid_df)
+```
+
+Check the date range and also some quick plots of the {col}s and cumulative_{col}s.
+
+```{r}
+# Print off a summary of the dates
+print(paste("Start date of cases:",uk_covid_df %>% summarise(min(date)) %>% pull()))
+print(paste("Start date of deaths:", uk_covid_df %>% filter(cumulative_deaths > 0) %>% summarise(min(date)) %>% pull()))
+print(paste("End date of cases:",uk_covid_df %>% summarise(max(date)) %>% pull()))
+print(paste("End date of deaths:", uk_covid_df %>% filter(cumulative_deaths > 0) %>% summarise(max(date)) %>% pull()))
+```
+```{r}
+# Chart the non-cumulative cols (not sure how you can have negative deaths)
+p <- uk_covid_df %>% 
+  select(-starts_with("cumulative_")) %>%
+  pivot_longer(cols = -date, names_to = "measure", values_to = "count") %>%
+  ggplot(aes(x = date, y = count)) +
+  geom_line() +
+  facet_wrap(facets = ~measure, ncol = 1, scales = "free_y")
+
+ggplotly(p)
+```
+```{r}
+# Chart the cumulative cols (not sure how you can have negative deaths)
+p <- uk_covid_df %>% 
+  select(date, starts_with("cumulative_")) %>%
+  pivot_longer(cols = -date, names_to = "measure", values_to = "count") %>%
+  ggplot(aes(x = date, y = count, group = measure)) +
+  geom_line() +
+  facet_wrap(facets = ~measure, ncol = 1, scales = "free_y")
+
+ggplotly(p)
+```
