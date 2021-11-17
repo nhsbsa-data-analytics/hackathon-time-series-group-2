@@ -60,7 +60,7 @@ The first confirmed cases of coronavirus in the UK were on January 29 [2020], wh
 
 Plot the time series.
 
-```{r}
+```{r, out.width="100%"}
 p <- mortality_df %>%
   ggplot(aes(WE, Deaths)) + 
   geom_line() +
