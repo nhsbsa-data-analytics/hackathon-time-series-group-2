@@ -1,6 +1,6 @@
 ---
 title: "Hackathon November 2021 - Group 2"
-output: html_notebook
+output: html_document
 ---
 
 ```{r}
