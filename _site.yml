@@ -1,5 +1,2 @@
-name: "R Markdown Websites Tutorial"
-navbar:
-  title: "HOME"
 output_dir: "."
 output: html_document

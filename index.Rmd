@@ -3,7 +3,7 @@ title: "Hackathon November 2021 - Group 2"
 output: html_document
 ---
 
-```{r}
+```{r, echo=FALSE}
 library(dplyr)
 library(ggplot2)
 library(tidyr)
