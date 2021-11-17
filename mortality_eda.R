@@ -22,10 +22,15 @@ ggplot(DT, aes(WE, Deaths)) + geom_line() +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(labels = \(x) x/1e3) +
   geom_vline(xintercept = ymd("2020-01-29"), color="red", lty=2) +
+  geom_vline(xintercept = ymd("2017-01-20"), color="blue", lty=2) + 
   ylab("Deaths (thousands)") +
   theme(axis.title.x = element_blank())
 
 #2/3 of observations of the covid-free period
-TR <- round(DT[WE < ymd("2020-01-29"), .N] * 2/3)
+tr <- round(DT[WE < ymd("2020-01-29"), .N] * 2/3)
+TR <- DT[1:tr]
+TS <- DT[(tr+1):DT[WE < ymd("2020-01-29"), .N]]
+rm(tr)
 
-TR <- DT[1:TR]
+TR.ts <- ts(DT$Deaths, freq=365.25/7, start = decimal_date(ymd("2011-01-07")))
+TS.ts <- ts(DT$Deaths, freq=365.25/7, start = decimal_date(ymd("2017-01-20")))
