@@ -96,7 +96,7 @@ print(paste("End date of cases:",uk_covid_df %>% summarise(max(date)) %>% pull()
 print(paste("End date of deaths:", uk_covid_df %>% filter(deaths_cumulative > 0) %>% summarise(max(date)) %>% pull()))
 ```
 
-Quickly plot some of the cols (`{col}` on the right and `{col}_cumulative on the right).
+Quickly plot some of the cols (`{col}` on the right and `{col}_cumulative` on the right).
 
 ```{r, out.width="100%"}
 # Chart the cols (not sure how you can have negative deaths)
