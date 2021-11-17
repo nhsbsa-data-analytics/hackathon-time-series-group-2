@@ -7,6 +7,7 @@ output: html_notebook
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(plotly)
 ```
 
 # Introduction
@@ -64,19 +65,23 @@ print(paste("End date of deaths:", uk_covid_df %>% filter(cumulative_deaths > 0)
 ```
 ```{r}
 # Chart the non-cumulative cols (not sure how you can have negative deaths)
-uk_covid_df %>% 
+p <- uk_covid_df %>% 
   select(-starts_with("cumulative_")) %>%
   pivot_longer(cols = -date, names_to = "measure", values_to = "count") %>%
   ggplot(aes(x = date, y = count)) +
   geom_line() +
   facet_wrap(facets = ~measure, ncol = 1, scales = "free_y")
+
+ggplotly(p)
 ```
 ```{r}
 # Chart the cumulative cols (not sure how you can have negative deaths)
-uk_covid_df %>% 
+p <- uk_covid_df %>% 
   select(date, starts_with("cumulative_")) %>%
   pivot_longer(cols = -date, names_to = "measure", values_to = "count") %>%
-  ggplot(aes(x = date, y = count)) +
+  ggplot(aes(x = date, y = count, group = measure)) +
   geom_line() +
   facet_wrap(facets = ~measure, ncol = 1, scales = "free_y")
+
+ggplotly(p)
 ```
