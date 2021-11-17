@@ -6,8 +6,13 @@ output:
 ---
 
 ```{r, echo=FALSE}
-library(dplyr)
+options(scipen = 999)
+
+library(openxlsx)
+library(data.table)
+library(lubridate)
 library(ggplot2)
+library(dplyr)
 library(tidyr)
 library(plotly)
 library(rmarkdown)
@@ -17,11 +22,68 @@ library(rmarkdown)
 
 We have been given the task of exploring time series analysis as part of a hackathon. We have been given access to 3 datasets:
 
-1. [Data on COVID-19 (coronavirus) by Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
-2.
+1. Mortality data
+2. [Data on COVID-19 (coronavirus) by Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
 3.
 
-###### 1. Data on COVID-19 (coronavirus) by Our World in Data
+### Exploratory data analysis
+
+###### 1 Mortalilty data
+
+Read in data and format as time series.
+
+```{r}
+# Read in the correct sheet as a data.table
+mortality_df <- 
+  read.xlsx(
+    xlsxFile = "Data/MortalityDataEngandWales_2011_2021.xlsx", 
+    sheet = "TotalDeaths2011to2020"
+  ) %>% 
+  as.data.table()
+
+# Name the table
+setnames(mortality_df, 1:2, c("WE","Deaths"))
+
+# Convert WE to a date
+mortality_df[, WE := as.Date(WE, origin = as.Date("1899-12-30"))]
+
+# Create the time series
+mortality_ts <- ts(
+  data = mortality_df$Deaths, 
+  freq = 365.25/7, # https://stackoverflow.com/questions/22188660/r-time-series-modeling-on-weekly-data-using-ts-object
+  start = decimal_date(ymd("2011-01-07"))
+) 
+
+```
+
+The first confirmed cases of coronavirus in the UK were on January 29 [2020], when two Chinese nationals fell ill at the Staycity Aparthotel in York.
+
+Plot the time series.
+
+```{r}
+p <- mortality_df %>%
+  ggplot(aes(WE, Deaths)) + 
+  geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = function(x) x/1e3) +
+  geom_vline(xintercept = as.numeric(ymd("2020-01-29")), color="red", lty=2) +
+  ylab("Deaths (thousands)") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank())
+
+ggplotly(p)
+```
+
+```{r}
+
+#2/3 of observations of the covid-free period
+mortality_train_ts <- round(mortality_df[WE < ymd("2020-01-29"), .N] * 2/3)
+
+mortality_train_ts <- mortality_ts[1:mortality_train_ts]
+
+```
+
+###### 2. Data on COVID-19 (coronavirus) by Our World in Data
 
 This data can be read in directly from GitHub using `{readr}`. The `col_types` have to be specified up front otherwise it doesn't load correctly.
 
