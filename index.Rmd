@@ -248,7 +248,7 @@ The correlation at lag 0 is still strong, but weaker compared to the correlation
 
 If we do this on every pair of variables...
 
-```{r message=FALSE, results=FALSE}
+```{r message=FALSE, results=FALSE, fig.show='hide'}
 Rm <- data.table()
 
 for (j in names(DTm)[2:8]) {
@@ -328,6 +328,11 @@ ggplot(Rf, aes(x, y, fill = r_max)) +
 ```{r}
 grid.arrange(m1, m2, f1, f2, nrow = 2)
 ```
+
+A few things to note
+- There are still fairly strong correlations among older age groups, but weaker compared to before differencing and pre-whitening.
+- Coefficient matrices are not symmetrical: this is because pre-whitening function fits a TS model to the first series and then uses it to pre-whiten both series. So the order of series in a pair matters, but in this case the differences are tiny.
+- The left sides show correlation coefficients at 0 lag, while the right sides show the maximum correlation coefficient at any lag. (Right coefficient can be larger than left, but not vice versa.) Here, it only makes a small difference in low-strength correlation pairs, which makes it negligible/unimportant.
 
 
 ###### 2. Data on COVID-19 (coronavirus) by Our World in Data
