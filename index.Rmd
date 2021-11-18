@@ -128,7 +128,7 @@ DT
 
 ```
 
-```{r}
+```{r  fig.width=10, fig.height=5}
 ggplot(DT, aes(WE, value)) +
   geom_line(aes(color=paste(Gender, AG)))  +
   facet_wrap(~Gender) +
@@ -140,7 +140,7 @@ ggplot(DT, aes(WE, value)) +
 
 Normalize numbers of deaths to facilitate comparison.
 
-```{r}
+```{r fig.width=10, fig.height=5}
 normalize <- function(x, na.rm = TRUE) {
   return((x- min(x)) /(max(x)-min(x)))
 }
@@ -159,7 +159,7 @@ ggplot(DT, aes(WE, value_norm)) +
 
 Separate into facets.
 
-```{r}
+```{r fig.width=7, fig.height=7}
 ggplot(DT, aes(WE, value_norm)) +
   geom_line(aes(color=paste(Gender, AG)))  +
   ylab("Normalized deaths\n") +
@@ -228,8 +228,12 @@ ggplot(Rf, aes(x, y, fill = r)) +
   scale_fill_gradient(low = colf[1], high = colf[7]) +
   theme(axis.title = element_blank(),
         panel.background = element_blank()) -> gf
+```
+
+```{r  fig.width = 10, fig.height = 5}
 
 grid.arrange(gm, gf, nrow = 1)
+
 ```
 
 The above correlations are at 0 lag. Let's explore the lag out of interest in one pair using the Cross-Correlation Function (CCF). 
@@ -325,14 +329,17 @@ ggplot(Rf, aes(x, y, fill = r_max)) +
 
 ```
 
-```{r}
+```{r fig.width = 12, fig.height = 8}
 grid.arrange(m1, m2, f1, f2, nrow = 2)
 ```
 
 A few things to note
-- There are still fairly strong correlations among older age groups, but weaker compared to before differencing and pre-whitening.
-- Coefficient matrices are not symmetrical: this is because pre-whitening function fits a TS model to the first series and then uses it to pre-whiten both series. So the order of series in a pair matters, but in this case the differences are tiny.
-- The left sides show correlation coefficients at 0 lag, while the right sides show the maximum correlation coefficient at any lag. (Right coefficient can be larger than left, but not vice versa.) Here, it only makes a small difference in low-strength correlation pairs, which makes it negligible/unimportant.
+
+* There are still fairly strong correlations among older age groups, but weaker compared to before differencing and pre-whitening.
+
+* Coefficient matrices are not symmetrical: this is because pre-whitening function fits a TS model to the first series and then uses it to pre-whiten both series. So the order of series in a pair matters, but in this case the differences are tiny.
+
+* The left sides show correlation coefficients at 0 lag, while the right sides show the maximum correlation coefficient at any lag. (Right coefficient can be larger than left, but not vice versa.) Here, it only makes a small difference in low-strength correlation pairs, which makes it negligible/unimportant.
 
 
 ###### 2. Data on COVID-19 (coronavirus) by Our World in Data
