@@ -12,10 +12,8 @@ setnames(DT, 1:2, c("WE","Deaths"))
 DT[, WE := as.Date(WE, origin = as.Date("1899-12-30"))]
 
  
-
-
 # The first confirmed cases of coronavirus in the UK were on January 29 [2020],
-# when two Chinese nationals fell ill at the Staycity Aparthotel in York
+# when two Chinese nationals fell ill at the Staycity Aparthotel in York.
 
 plot(TS)
 
