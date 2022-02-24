@@ -1,0 +1,8 @@
+name: "time-series-analysis"
+navbar:
+  title: "Time series analysis in R"
+  left:
+    - text: "Forecasting"
+      href: forecasting.html
+    - text: "Correlation"
+      href: index.html
